@@ -1,0 +1,7 @@
+POST http://localhost:4000/api/note
+Content-Type: application/json
+
+{
+    "content" : "Nueva nota",
+    "important": true
+}
