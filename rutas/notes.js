@@ -1,26 +1,50 @@
 import express from 'express'
+import * as notesServices from '../services/Notes.js'
 
 const router = express.Router()
 
-router.get('/', (req, resp) => {
-    resp.send('notes desde modulo')
-})
-
-router.delete('/:id', (req, resp) => {
-    const id = Number(req.params.id)
-    notes = notes.filter(note => note.id !== id)
-    resp.send(204)
-})
-
-router.get('/:id', (req, resp) => {
-    const id = Number(req.params.id)
-    const note = notes.find(note => note.id === id)
-    if (note) {
-        resp.send(note)
-    } else {
-        resp.status(404).send({ error: "No se encontro la página" })
+router.get('/', async (req, resp) => {
+    try {
+        const results = await notesServices.getAll()
+        resp.send(results)
+    } catch (error) {
+        resp.status(500).send({ error: "Error de servidor" })
     }
-    console.log(req.params)
+})
+router.post('/', async (req, resp) => {
+    const results = await notesServices.postNote({ body: req.body })
+    // resp.send("XD")
+    if (results > 0) {
+        resp.send({ msg: "Nota creada correctamente" })
+    } else {
+        resp.send({ error: "Error al crear la nota" })
+    }
+    try {
+    } catch (error) {
+        resp.status(500).send({ error: "Error de servidor" })
+    }
+})
+
+router.delete('/:id', async (req, resp) => {
+    try {
+        const results = await notesServices.deleteNote({ id: req.params.id })
+        if (results > 0) {
+            resp.status(204).send({ msg: "Nota eliminada" })
+        } else {
+            resp.send({ error: "Error al eliminar la nota" })
+        }
+    } catch (error) {
+        resp.status(404).send({ error: error })
+    }
+})
+
+router.get('/:id', async (req, resp) => {
+    try {
+        const results = await notesServices.getSingleNote({ id: req.params.id })
+        resp.send(results)
+    } catch (error) {
+        resp.status(404).send({ error: error })
+    }
 })
 
 router.post('/', (req, resp) => {

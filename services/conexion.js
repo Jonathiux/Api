@@ -4,6 +4,7 @@ const  conexion = conex.createConnection({
     host: 'localhost',
     user: 'root',
     password: '',
+    database:'api_notes',
     port: 3306
 })
 
@@ -14,3 +15,4 @@ conexion.connect((error)=>{
     }
     console.log('Conectado a BD MYSQL')
 })
+export default conexion
